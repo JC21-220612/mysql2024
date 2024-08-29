@@ -8,19 +8,18 @@
 <title>form1</title>
 </head>
 <%
-	ArrayList<String[]> result =
-		(ArrayList<String[]>)request.getAttribute("result");
+	ArrayList<String[]> result = (ArrayList<String[]>)request.getAttribute("result");
 %>
 
 <body>
-	<table>
-
-		<% for (String[] ss : result){ %>
-		<option VALUE="<%= ss[1] %>>">
-			<%=ss[0] %>
-		</option>
-		<%} %>
-
-	</table>
+	<form method="GET" action="./result1">
+	<select name="ID">
+	<option value="200">のり弁当</option>
+	<option value="201">のりデラックス</option>
+	<option value="202">のりからあげ弁当</option>
+	<option value="510">とん汁</option>
+	</select>
+	<input type="submit" value="絞り込む">
+	</form>
 </body>
 </html>

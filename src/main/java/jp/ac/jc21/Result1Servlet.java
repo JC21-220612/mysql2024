@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class IndexServlet
  */
-@WebServlet("/Result1")
+@WebServlet("/result1")
 public class Result1Servlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -30,8 +30,9 @@ public class Result1Servlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-//		response.getWriter().append("Served at: ").append(request.getContextPath());
+		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		String url = "jdbc:mysql://"+dbServer+"/"+dbName;
+		String id = request.getParameter("ID");
 		response.setContentType("text/html;charset=UTF-8");
 		response.getWriter().append("<h2>Connect to : ").append(url).append("</h2>");
 		
@@ -40,9 +41,11 @@ public class Result1Servlet extends HttpServlet {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection  conn = DriverManager.getConnection(url, user, pass);
 			
-			String sql ="SELECT item_id,item_name,price FROM Items";
+			String sql ="SELECT item_id,item_name,price FROM Items WHERE item_id =?";
 			
 			PreparedStatement statement = conn.prepareStatement(sql);
+			
+			statement.setString(1,id);
 			
 			ResultSet rs = statement.executeQuery();
 			
@@ -50,14 +53,13 @@ public class Result1Servlet extends HttpServlet {
 			while(rs.next() == true) {
 				String[] s = new String[3];
 				s[0] = rs.getString("item_name");
-				s[1] = rs.getString("item_name");
-				s[2] = rs.getString("item_name");
+				s[1] = rs.getString("item_id");
+				s[2] = rs.getString("price");
 				result.add(s);
 			}
 			
 			request.setAttribute("result", result);
-			RequestDispatcher rd =
-					request.getRequestDispatcher("/WEB-INF/jsp/result1.jsp");
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/result1.jsp");
 			rd.forward(request,response);
 			
 		} catch (SQLException e) {

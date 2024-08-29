@@ -50,8 +50,8 @@ public class Index3Servlet extends HttpServlet {
 			while(rs.next() == true) {
 				String[] s = new String[3];
 				s[0] = rs.getString("item_name");
-				s[1] = rs.getString("item_name");
-				s[2] = rs.getString("item_name");
+				s[1] = rs.getString("item_id");
+				s[2] = rs.getString("price");
 				result.add(s);
 			}
 			

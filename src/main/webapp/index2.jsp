@@ -17,13 +17,13 @@
 		<% for (String[] ss : result){ %>
 		<tr>
 			<th>
-				<% ss[1] %>
+				<%= ss[1] %>
 			</th>
 			<td>
-				<% ss[0] %>
+				<%= ss[0] %>
 			</td>
 			<td>
-				<% ss[2] %>
+				<%= ss[2] %>
 			</td>
 		</tr>
 		<%} %>

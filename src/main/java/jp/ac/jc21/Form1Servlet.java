@@ -30,7 +30,7 @@ public class Form1Servlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-//		response.getWriter().append("Served at: ").append(request.getContextPath());
+		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		String url = "jdbc:mysql://"+dbServer+"/"+dbName;
 		response.setContentType("text/html;charset=UTF-8");
 		response.getWriter().append("<h2>Connect to : ").append(url).append("</h2>");
@@ -44,20 +44,20 @@ public class Form1Servlet extends HttpServlet {
 			
 			PreparedStatement statement = conn.prepareStatement(sql);
 			
+
 			ResultSet rs = statement.executeQuery();
-			
 			ArrayList<String[]> result = new ArrayList<>();
 			while(rs.next() == true) {
 				String[] s = new String[3];
 				s[0] = rs.getString("item_name");
-				s[1] = rs.getString("item_name");
-				s[2] = rs.getString("item_name");
+				s[1] = rs.getString("item_id");
+				s[2] = rs.getString("price");
 				result.add(s);
 			}
 			
 			request.setAttribute("result", result);
-			RequestDispatcher rd =
-					request.getRequestDispatcher("/WEB-INF/jsp/form1.jsp");
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/form1.jsp");
 			rd.forward(request,response);
 			
 		} catch (SQLException e) {
@@ -65,8 +65,6 @@ public class Form1Servlet extends HttpServlet {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-
-
 	}
 
 }
