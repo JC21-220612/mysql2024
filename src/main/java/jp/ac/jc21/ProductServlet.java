@@ -41,7 +41,7 @@ public class ProductServlet extends HttpServlet {
  
             ArrayList<String> makers = new ArrayList<>();
             while(rs.next()) {
-                makers.add(rs.getString("MAKER_CODE"));
+                makers.add(rs.getString("MAKER_NAME"));
             }
             request.setAttribute("makers", makers);
  
