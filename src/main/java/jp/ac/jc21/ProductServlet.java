@@ -35,7 +35,7 @@ public class ProductServlet extends HttpServlet {
             Connection conn = DriverManager.getConnection(url, user, pass);
  
             // メーカーの取得
-            String sql = "SELECT MAKER_CODE,MAKER_NAME FROM MAKER";
+            String sql = "SELECT MAKER_NAME FROM MAKER";
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
  
