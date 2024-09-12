@@ -16,7 +16,7 @@
 <body>
 <h2>メーカー一覧</h2>
 <form method="GET" action="./item">
-    <select name="MAKER_NAME">
+    <select name="MAKER_CODE">
         
         <% for (String maker : makers) { %>
             <option value="<%= maker %>"><%= maker %></option>
