@@ -35,23 +35,23 @@ public class ProductServlet extends HttpServlet {
             Connection conn = DriverManager.getConnection(url, user, pass);
  
             // メーカーの取得
-            String sql = "SELECT MAKER_NAME FROM MAKER";
+            String sql = "SELECT MAKER_CODE,MAKER_NAME FROM MAKER";
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
  
             ArrayList<String> makers = new ArrayList<>();
             while(rs.next()) {
-                makers.add(rs.getString("MAKER_NAME"));
+                makers.add(rs.getString("MAKER_CODE"));
             }
             request.setAttribute("makers", makers);
  
             // 全製品の取得または選択されたメーカーに基づく製品の取得
-            String selectedMaker = request.getParameter("MAKER_NAME");
+            String selectedMaker = request.getParameter("MAKER_CODE");
             if (selectedMaker == null || selectedMaker.isEmpty()) {
-                sql = "SELECT PRODUCT_CODE, PRODUCT_NAME, MAKER_CODE FROM PRODUCT";
+                sql = "SELECT PRODUCT_CODE, PRODUCT_NAME, MAKER_NAME FROM PRODUCT WHERE MAKER_CODE IN (SELECT MAKER_CODE FROM MAKER)";
                 statement = conn.prepareStatement(sql);
             } else {
-                sql = "SELECT PRODUCT_CODE, PRODUCT_NAME, MAKER_CODE FROM PRODUCT WHERE MAKER_CODE IN (SELECT MAKER_CODE FROM MAKER WHERE MAKER_NAME = ?)";
+                sql = "SELECT PRODUCT_CODE, PRODUCT_NAME, MAKER_NAME FROM PRODUCT WHERE MAKER_CODE IN (SELECT MAKER_CODE FROM MAKER WHERE MAKER_CODE = ?)";
                 statement = conn.prepareStatement(sql);
                 statement.setString(1, selectedMaker);
             }
@@ -62,7 +62,7 @@ public class ProductServlet extends HttpServlet {
                 String[] product = new String[3];
                 product[0] = rs.getString("PRODUCT_CODE");
                 product[1] = rs.getString("PRODUCT_NAME");
-                product[2] = rs.getString("MAKER_CODE");
+                product[2] = rs.getString("MAKER_NAME");
                 products.add(product);
             }
             request.setAttribute("products", products);
