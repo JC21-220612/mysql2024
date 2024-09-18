@@ -27,38 +27,38 @@ public class ProductServlet extends HttpServlet {
  
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String url = "jdbc:mysql://"+dbServer+"/"+dbName;
+        String url = "jdbc:mysql://" + dbServer + "/" + dbName;
         response.setContentType("text/html;charset=UTF-8");
- 
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conn = DriverManager.getConnection(url, user, pass);
- 
+
             // メーカーの取得
-            String sql = "SELECT MAKER_NAME FROM MAKER";
+            String sql = "SELECT MAKER_CODE, MAKER_NAME FROM MAKER";
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
- 
-            ArrayList<String> makers = new ArrayList<>();
-            while(rs.next()) {
-                makers.add(rs.getString("MAKER_NAME"));
+
+            ArrayList<String[]> makers = new ArrayList<>();
+            while (rs.next()) {
+                makers.add(new String[]{rs.getString("MAKER_CODE"), rs.getString("MAKER_NAME")});
             }
             request.setAttribute("makers", makers);
- 
+
             // 全製品の取得または選択されたメーカーに基づく製品の取得
-            String selectedMaker = request.getParameter("MAKER_CODE");
-            if (selectedMaker == null || selectedMaker.isEmpty()) {
-                sql = "SELECT PRODUCT_CODE, PRODUCT_NAME, MAKER_NAME FROM PRODUCT WHERE MAKER_CODE IN (SELECT MAKER_CODE FROM MAKER)";
+            String selectedMakerCode = request.getParameter("MAKER_CODE"); // MAKER_CODEで取得
+            if (selectedMakerCode == null || selectedMakerCode.isEmpty()) {
+                sql = "SELECT p.PRODUCT_CODE, p.PRODUCT_NAME, m.MAKER_NAME FROM PRODUCT p JOIN MAKER m ON p.MAKER_CODE = m.MAKER_CODE"; // 全製品取得
                 statement = conn.prepareStatement(sql);
             } else {
-                sql = "SELECT PRODUCT_CODE, PRODUCT_NAME, MAKER_NAME FROM PRODUCT WHERE MAKER_CODE IN (SELECT MAKER_CODE FROM MAKER WHERE MAKER_CODE = ?)";
+                sql = "SELECT p.PRODUCT_CODE, p.PRODUCT_NAME, m.MAKER_NAME FROM PRODUCT p JOIN MAKER m ON p.MAKER_CODE = m.MAKER_CODE WHERE m.MAKER_CODE = ?";
                 statement = conn.prepareStatement(sql);
-                statement.setString(1, selectedMaker);
+                statement.setString(1, selectedMakerCode); // MAKER_CODEを使用
             }
             rs = statement.executeQuery();
- 
+
             ArrayList<String[]> products = new ArrayList<>();
-            while(rs.next()) {
+            while (rs.next()) {
                 String[] product = new String[3];
                 product[0] = rs.getString("PRODUCT_CODE");
                 product[1] = rs.getString("PRODUCT_NAME");
@@ -66,7 +66,7 @@ public class ProductServlet extends HttpServlet {
                 products.add(product);
             }
             request.setAttribute("products", products);
- 
+
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/product.jsp");
             rd.forward(request, response);
         } catch (SQLException | ClassNotFoundException e) {
